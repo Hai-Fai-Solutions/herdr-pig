@@ -16,9 +16,36 @@ cd herdr-pig
 bun install
 ```
 
+## Git hooks
+
+The repository uses [pre-commit](https://pre-commit.com). Install it, then set
+the hooks up once:
+
+```bash
+pre-commit install
+```
+
+The hooks download their own tools, apart from Bun.
+
+| When | What runs |
+| --- | --- |
+| Before a commit | gitleaks for secrets, codespell and Vale for spelling and prose, Biome, the type check, shellcheck, actionlint for the workflows, and file hygiene checks |
+| On the commit message | A conventional-commit check |
+| Before a push | `bun test` |
+
+A hook also refuses a commit made directly on `main`. To run every hook on
+every file:
+
+```bash
+pre-commit run --all-files
+```
+
+Vale reads `.vale.ini`. Add a project word it does not know to
+`.vale/styles/config/vocabularies/herdr-pig/accept.txt`.
+
 ## Checks
 
-Run these before you open a pull request. CI runs the same ones.
+The hooks run these for you. To run them by hand:
 
 ```bash
 bun test             # extension and installer tests
@@ -86,7 +113,7 @@ inside the pull request are not checked.
 A pull request can merge once:
 
 - every check passes: tests on three platforms, lint, type check, shell lint,
-  dependency review, the title check and CodeQL;
+  the pre-commit hooks, dependency review, the title check and CodeQL;
 - it has one approving review from someone other than its author.
 
 `main` is protected. Changes reach it only through a pull request.

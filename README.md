@@ -10,7 +10,7 @@ same PiG session after a Herdr server restart.
 
 ## How it works
 
-There are two parts:
+It has two parts:
 
 - **A PiG extension** (`extensions/herdr-agent-state.ts`). It listens to PiG's
   lifecycle events and reports to Herdr over the socket Herdr exposes to every
