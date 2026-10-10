@@ -31,7 +31,9 @@ print, JSON or RPC modes.
 - Herdr 0.9.0 or later. Restoring sessions after a restart needs 0.9.2 or
   later; older versions show state only.
 - PiG, with Node.js available for its TypeScript extension host.
-- Linux or macOS.
+- Linux, macOS or Windows. Windows is a preview, as it is in PiG itself: the
+  installer is tested there, but the extension has not been run against Herdr
+  on a Windows machine.
 
 ## Install
 
@@ -55,6 +57,9 @@ herdr plugin link /path/to/herdr-pig
 herdr plugin action invoke herdr-pig.install
 ```
 
+On Windows the actions are `herdr-pig.install-windows`,
+`herdr-pig.uninstall-windows` and `herdr-pig.status-windows`.
+
 The install copies the extension to
 `~/.pig/agent/extensions/herdr-pig-agent-state.ts`. It honours
 `PIG_CODING_AGENT_DIR` and `PIG_HOME`.
@@ -63,6 +68,10 @@ You can also install without the plugin:
 
 ```bash
 sh scripts/pig-support.sh install      # or: uninstall, status
+```
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/pig-support.ps1 install
 ```
 
 Or load it for one run, without installing anything:
@@ -102,7 +111,6 @@ MIT. See [LICENSE](LICENSE).
   are not detected yet.
 - Installing is refused when `PIG_USE_PI_DIRS=1`, because Pi would then load
   the extension too and report itself as PiG.
-- Windows is not supported.
 
 ## Development
 
@@ -120,7 +128,7 @@ pig install . --validate-only --json       # check that PiG loads the extension
   `feat:`, `fix:`, `docs:`, `ci:` and so on. Add `!` after the type, or a
   `BREAKING CHANGE:` footer, for a breaking change.
 - Pull requests are squash-merged, so the PR title becomes the commit on
-  `main`. CI checks the title, lint, types, tests on Linux and macOS, and new
+  `main`. CI checks the title, lint, types, tests on Linux, macOS and Windows, and new
   dependencies before a PR can merge.
 - Every merge to `main` that has a `feat`, `fix`, `perf` or breaking commit
   releases a new version. [semantic-release](https://github.com/semantic-release/semantic-release)

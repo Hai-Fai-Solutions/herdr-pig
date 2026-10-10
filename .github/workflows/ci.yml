@@ -15,8 +15,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # The plugin supports both, and the install script is where they differ.
-        os: [ubuntu-latest, macos-latest]
+        # The plugin supports all three, and the install scripts are where they differ.
+        os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -64,6 +64,10 @@ jobs:
 
       - name: Lint shell script
         run: shellcheck --shell=sh scripts/pig-support.sh
+
+      - name: Lint PowerShell script
+        shell: pwsh
+        run: Invoke-ScriptAnalyzer -Path scripts/pig-support.ps1 -Severity Error -EnableExit
 
   # Fails a pull request that adds a dependency with a known vulnerability.
   dependency-review:
