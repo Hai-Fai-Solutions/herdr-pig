@@ -5,6 +5,8 @@
 # usage: pig-support.sh <install|uninstall|status|refresh>
 set -eu
 
+# CDPATH= stops a user CDPATH from changing where cd goes.
+# shellcheck disable=SC1007
 ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 SOURCE_FILE="$ROOT/extensions/herdr-agent-state.ts"
 INSTALL_NAME="herdr-pig-agent-state.ts"

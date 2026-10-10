@@ -12,6 +12,8 @@
 #   fix or perf                                       -> patch
 set -eu
 
+# CDPATH= stops a user CDPATH from changing where cd goes.
+# shellcheck disable=SC1007
 ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 
 last_tag() {
