@@ -49,6 +49,12 @@ Installing the plugin also installs the extension into PiG. Run `pig` once
 before installing, so its agent directory exists; otherwise the install stops
 and says so.
 
+To install a specific release, name its tag:
+
+```bash
+herdr plugin install Hai-Fai-Solutions/herdr-pig --ref v0.2.0
+```
+
 To work on the plugin itself, link a local checkout instead of installing it.
 Linking does not install the extension, so run the install action afterwards:
 
@@ -87,6 +93,18 @@ Start `pig` in a Herdr pane and send it a prompt:
 ```bash
 herdr agent list          # the pane shows "agent": "pig" and its state
 ```
+
+## Update
+
+Herdr has no update command. Install the plugin again to get the latest
+version:
+
+```bash
+herdr plugin install Hai-Fai-Solutions/herdr-pig
+```
+
+That replaces the plugin and installs the new extension into PiG. Restart
+`pig`, or run `/reload`, to load it.
 
 ## Uninstall
 
