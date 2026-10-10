@@ -1,0 +1,35 @@
+# herdr-pig: makes PiG (https://github.com/MichaelKinsy/PiG) a self-reporting
+# agent in Herdr. The work is done by a PiG extension that reports state and a
+# resume command over Herdr's socket; this plugin installs and updates it.
+
+id = "herdr-pig"
+name = "PiG support"
+version = "0.1.0"
+description = "Show PiG's idle, working and blocked state in Herdr, and restore its sessions after a restart."
+# State reports work from 0.9.0. Restoring sessions needs Herdr 0.9.2 or later;
+# older versions ignore the resume command.
+min_herdr_version = "0.9.0"
+platforms = ["linux", "macos"]
+
+# Keeps an installed copy of the extension in step with this plugin after an
+# update. It does nothing unless the extension was installed through an action.
+[[startup]]
+command = ["/bin/sh", "scripts/pig-support.sh", "refresh"]
+
+[[actions]]
+id = "install"
+title = "PiG support: install"
+contexts = ["global"]
+command = ["/bin/sh", "scripts/pig-support.sh", "install"]
+
+[[actions]]
+id = "uninstall"
+title = "PiG support: uninstall"
+contexts = ["global"]
+command = ["/bin/sh", "scripts/pig-support.sh", "uninstall"]
+
+[[actions]]
+id = "status"
+title = "PiG support: status"
+contexts = ["global"]
+command = ["/bin/sh", "scripts/pig-support.sh", "status"]

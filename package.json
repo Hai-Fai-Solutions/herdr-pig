@@ -1,0 +1,13 @@
+{
+  "name": "herdr-pig",
+  "version": "0.1.0",
+  "description": "PiG extension that reports agent state and a resume command to Herdr.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "bun test"
+  },
+  "pi": {
+    "extensions": ["extensions/herdr-agent-state.ts"]
+  }
+}
