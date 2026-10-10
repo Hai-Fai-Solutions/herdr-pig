@@ -1,0 +1,48 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+# One release at a time, so two merges cannot compute the same version.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      # The release commit goes to main, which is protected. The checkout uses
+      # RELEASE_TOKEN, a token from a user or app on the main branch's bypass
+      # list, because the default GITHUB_TOKEN cannot push past the rules.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_TOKEN }}
+
+      - name: Bump version, commit and tag
+        id: release
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          version=$(sh scripts/release.sh apply)
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Push commit and tag
+        if: steps.release.outputs.version != ''
+        env:
+          VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          git push origin HEAD:main
+          git push origin "v$VERSION"
+
+      - name: Create GitHub release
+        if: steps.release.outputs.version != ''
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          VERSION: ${{ steps.release.outputs.version }}
+        run: gh release create "v$VERSION" --title "v$VERSION" --generate-notes

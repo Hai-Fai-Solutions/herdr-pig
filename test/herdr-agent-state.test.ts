@@ -38,11 +38,12 @@ async function startHerdr(): Promise<any[]> {
     let buffer = "";
     socket.on("data", (chunk) => {
       buffer += chunk.toString();
-      let newline: number;
-      while ((newline = buffer.indexOf("\n")) >= 0) {
+      let newline = buffer.indexOf("\n");
+      while (newline >= 0) {
         requests.push(JSON.parse(buffer.slice(0, newline)));
         buffer = buffer.slice(newline + 1);
         socket.write('{"result":{}}\n');
+        newline = buffer.indexOf("\n");
       }
     });
   });

@@ -99,6 +99,20 @@ MIT. See [LICENSE](LICENSE).
 ## Development
 
 ```bash
-bun test                                   # extension and install script tests
+bun install
+bun test                                   # extension, install script and release tests
+bun run lint                               # Biome lint
 pig install . --validate-only --json       # check that PiG loads the extension
 ```
+
+### Contributing
+
+- Commit and title changes with [Conventional Commits](https://www.conventionalcommits.org):
+  `feat:`, `fix:`, `docs:`, `ci:` and so on. Add `!` after the type, or a
+  `BREAKING CHANGE:` footer, for a breaking change.
+- Pull requests are squash-merged, so the PR title becomes the commit on
+  `main`. CI checks the title, lint and tests before a PR can merge.
+- Every merge to `main` that has a `feat`, `fix`, `perf` or breaking commit
+  releases a new version. The release workflow bumps `package.json` and
+  `herdr-plugin.toml`, commits `chore(release): vX.Y.Z`, tags it and creates a
+  GitHub release. Other commit types do not release.

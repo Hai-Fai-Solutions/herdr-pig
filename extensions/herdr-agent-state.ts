@@ -81,6 +81,7 @@ function requestId(kind: string): string {
 // Herdr rejects a resume command whose arguments contain an apostrophe or a
 // control character, and rejecting it drops the whole state report.
 export function isSafeResumeArg(value: unknown): value is string {
+  // biome-ignore lint/suspicious/noControlCharactersInRegex: the control characters are the point of this check
   return typeof value === "string" && value.length > 0 && !/['\u0000-\u001f\u007f]/.test(value);
 }
 

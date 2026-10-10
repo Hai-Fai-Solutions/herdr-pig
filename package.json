@@ -6,9 +6,15 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
+    "lint": "biome lint .",
     "test": "bun test"
   },
   "pi": {
-    "extensions": ["extensions/herdr-agent-state.ts"]
+    "extensions": [
+      "extensions/herdr-agent-state.ts"
+    ]
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.15"
   }
 }
