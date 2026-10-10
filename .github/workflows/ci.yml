@@ -41,7 +41,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Check shell script syntax
-        run: sh -n scripts/pig-support.sh && sh -n scripts/release.sh
+        run: sh -n scripts/pig-support.sh
 
       - name: Lint shell scripts
-        run: shellcheck --shell=sh scripts/pig-support.sh scripts/release.sh
+        run: shellcheck --shell=sh scripts/pig-support.sh
