@@ -19,12 +19,12 @@ jobs:
       # semantic-release pushes the version commit and tag to main, which is
       # protected. RELEASE_TOKEN belongs to a user or app on the main branch's
       # bypass list, because the default GITHUB_TOKEN cannot push past the rules.
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           token: ${{ secrets.RELEASE_TOKEN }}
 
-      - uses: oven-sh/setup-bun@v2
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: "1.4.2"
 

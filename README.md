@@ -102,6 +102,7 @@ MIT. See [LICENSE](LICENSE).
 bun install
 bun test                                   # extension and install script tests
 bun run lint                               # Biome lint
+bun run typecheck                          # TypeScript type check
 pig install . --validate-only --json       # check that PiG loads the extension
 ```
 
@@ -111,7 +112,8 @@ pig install . --validate-only --json       # check that PiG loads the extension
   `feat:`, `fix:`, `docs:`, `ci:` and so on. Add `!` after the type, or a
   `BREAKING CHANGE:` footer, for a breaking change.
 - Pull requests are squash-merged, so the PR title becomes the commit on
-  `main`. CI checks the title, lint and tests before a PR can merge.
+  `main`. CI checks the title, lint, types, tests on Linux and macOS, and new
+  dependencies before a PR can merge.
 - Every merge to `main` that has a `feat`, `fix`, `perf` or breaking commit
   releases a new version. [semantic-release](https://github.com/semantic-release/semantic-release)
   (`release.config.mjs`) bumps `package.json` and `herdr-plugin.toml`, updates
