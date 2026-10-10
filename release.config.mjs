@@ -15,6 +15,7 @@ export default {
     [
       "@semantic-release/exec",
       {
+        // biome-ignore lint/suspicious/noTemplateCurlyInString: semantic-release fills in ${nextRelease.version}
         prepareCmd: "sed -i.bak -e 's/^version = \"[^\"]*\"/version = \"${nextRelease.version}\"/' herdr-plugin.toml && rm herdr-plugin.toml.bak",
       },
     ],
@@ -22,6 +23,7 @@ export default {
       "@semantic-release/git",
       {
         assets: ["package.json", "herdr-plugin.toml", "CHANGELOG.md"],
+        // biome-ignore lint/suspicious/noTemplateCurlyInString: semantic-release fills in these placeholders
         message: "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}",
       },
     ],
