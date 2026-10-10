@@ -11,8 +11,14 @@ description = "Show PiG's idle, working and blocked state in Herdr, and restore 
 min_herdr_version = "0.9.0"
 platforms = ["linux", "macos"]
 
-# Keeps an installed copy of the extension in step with this plugin after an
-# update. It does nothing unless the extension was installed through an action.
+# Copies the extension into PiG's agent directory during `herdr plugin install`.
+# A failure here aborts the install with the reason, for example when PiG has
+# never been run. `herdr plugin link` skips build steps; use the install action.
+[[build]]
+command = ["/bin/sh", "scripts/pig-support.sh", "install"]
+
+# Keeps an installed copy of the extension in step with this plugin. It does
+# nothing when the extension is not installed, so uninstalling it sticks.
 [[startup]]
 command = ["/bin/sh", "scripts/pig-support.sh", "refresh"]
 

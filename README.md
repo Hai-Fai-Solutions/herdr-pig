@@ -35,22 +35,27 @@ print, JSON or RPC modes.
 
 ## Install
 
-Install the plugin from GitHub, then run its install action:
+Install the plugin from GitHub:
 
 ```bash
 herdr plugin install Hai-Fai-Solutions/herdr-pig
-herdr plugin action invoke herdr-pig.install
 ```
 
 Restart `pig`, or run `/reload` in a running session.
 
-To work on the plugin itself, link a local checkout instead of installing it:
+Installing the plugin also installs the extension into PiG. Run `pig` once
+before installing, so its agent directory exists; otherwise the install stops
+and says so.
+
+To work on the plugin itself, link a local checkout instead of installing it.
+Linking does not install the extension, so run the install action afterwards:
 
 ```bash
 herdr plugin link /path/to/herdr-pig
+herdr plugin action invoke herdr-pig.install
 ```
 
-The install action copies the extension to
+The install copies the extension to
 `~/.pig/agent/extensions/herdr-pig-agent-state.ts`. It honours
 `PIG_CODING_AGENT_DIR` and `PIG_HOME`.
 
@@ -80,6 +85,9 @@ herdr agent list          # the pane shows "agent": "pig" and its state
 herdr plugin action invoke herdr-pig.uninstall
 herdr plugin uninstall herdr-pig      # or: herdr plugin unlink herdr-pig
 ```
+
+Run the uninstall action first. Herdr has no uninstall hook, so removing the
+plugin alone leaves the extension in PiG's agent directory.
 
 ## License
 

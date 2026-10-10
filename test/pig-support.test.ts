@@ -108,3 +108,23 @@ test("refresh updates an outdated install but never installs on its own", () => 
   expect(run("refresh").status).toBe(0);
   expect(readFileSync(installedPath(), "utf8")).toBe(readFileSync(SOURCE, "utf8"));
 });
+
+// Herdr runs the manifest's build commands from the plugin checkout during
+// `herdr plugin install`, without any of the runtime plugin environment.
+test("the plugin's build step installs the extension", () => {
+  mkdirSync(join(home, ".pig", "agent"), { recursive: true });
+  const manifest = Bun.TOML.parse(readFileSync(join(ROOT, "herdr-plugin.toml"), "utf8")) as {
+    build: { command: string[] }[];
+  };
+  expect(manifest.build).toHaveLength(1);
+
+  const [program, ...args] = manifest.build[0].command;
+  const result = spawnSync(program, args, {
+    cwd: ROOT,
+    encoding: "utf8",
+    env: { PATH: process.env.PATH ?? "", HOME: home },
+  });
+
+  expect(result.status).toBe(0);
+  expect(readFileSync(installedPath(), "utf8")).toBe(readFileSync(SOURCE, "utf8"));
+});
