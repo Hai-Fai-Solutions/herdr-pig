@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test } from "bun:test";
+import { afterEach, beforeEach, describe, expect, setDefaultTimeout, test } from "bun:test";
 import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -26,6 +26,9 @@ if (POWERSHELL) {
   });
 }
 
+// Each case starts the script several times, and PowerShell is slow to start.
+setDefaultTimeout(60_000);
+
 let home: string;
 
 beforeEach(() => {
@@ -37,14 +40,18 @@ afterEach(() => {
 });
 
 // A clean environment keeps the user's real PiG and Herdr settings out of the tests.
-// Windows needs a few system variables before PowerShell will start at all.
+// PowerShell on Windows needs the system's own variables to start, so there the
+// environment is kept and only the PiG and Herdr variables are dropped.
 function cleanEnv(extra: Record<string, string> = {}) {
-  const env: Record<string, string> = { PATH: process.env.PATH ?? "", HOME: home, USERPROFILE: home };
-  for (const key of ["SystemRoot", "windir", "PATHEXT", "ComSpec", "TEMP", "TMP"]) {
-    const value = process.env[key];
-    if (value !== undefined) env[key] = value;
+  const env: Record<string, string> = {};
+  if (WINDOWS) {
+    for (const [key, value] of Object.entries(process.env)) {
+      if (value !== undefined && !/^(PIG_|HERDR_)/i.test(key)) env[key] = value;
+    }
+  } else {
+    env.PATH = process.env.PATH ?? "";
   }
-  return { ...env, ...extra };
+  return { ...env, HOME: home, USERPROFILE: home, ...extra };
 }
 
 function installedPath(agentDir = join(home, ".pig", "agent")) {
