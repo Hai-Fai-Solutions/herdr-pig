@@ -35,14 +35,20 @@ print, JSON or RPC modes.
 
 ## Install
 
-Link the plugin, then run its install action:
+Install the plugin from GitHub, then run its install action:
 
 ```bash
-herdr plugin link /path/to/herdr-pig
+herdr plugin install Hai-Fai-Solutions/herdr-pig
 herdr plugin action invoke herdr-pig.install
 ```
 
 Restart `pig`, or run `/reload` in a running session.
+
+To work on the plugin itself, link a local checkout instead of installing it:
+
+```bash
+herdr plugin link /path/to/herdr-pig
+```
 
 The install action copies the extension to
 `~/.pig/agent/extensions/herdr-pig-agent-state.ts`. It honours
@@ -72,8 +78,12 @@ herdr agent list          # the pane shows "agent": "pig" and its state
 
 ```bash
 herdr plugin action invoke herdr-pig.uninstall
-herdr plugin unlink herdr-pig
+herdr plugin uninstall herdr-pig      # or: herdr plugin unlink herdr-pig
 ```
+
+## License
+
+MIT. See [LICENSE](LICENSE).
 
 ## Limits
 
