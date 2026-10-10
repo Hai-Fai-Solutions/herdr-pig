@@ -1,0 +1,88 @@
+# Local checks that run before a commit, on the commit message, and before a push.
+# Set up once with: mise run hooks:install
+# CI runs the pre-commit stage on every file, so a skipped hook is still caught.
+default_install_hook_types: [pre-commit, commit-msg, pre-push]
+default_stages: [pre-commit]
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: check-merge-conflict
+      - id: check-case-conflict
+      - id: check-json
+      - id: check-toml
+      - id: check-yaml
+      - id: check-added-large-files
+      - id: check-executables-have-shebangs
+      # main only takes pull requests; this catches the mistake before the push is refused.
+      - id: no-commit-to-branch
+        args: [--branch, main]
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.4.3
+    hooks:
+      - id: codespell
+        exclude: ^(bun\.lock|CHANGELOG\.md)$
+
+  - repo: https://github.com/errata-ai/vale
+    rev: v3.24.0
+    hooks:
+      # Downloads the styles named in .vale.ini; they are not kept in the repository.
+      - id: vale
+        name: vale (fetch styles)
+        entry: vale sync
+        pass_filenames: false
+        files: \.md$
+        exclude: ^CHANGELOG\.md$
+      - id: vale
+        files: \.md$
+        exclude: ^CHANGELOG\.md$
+
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.11.0.1
+    hooks:
+      - id: shellcheck
+        args: [--shell=sh]
+
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.12
+    hooks:
+      - id: actionlint
+
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v4.4.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+
+  # These run the project's mise tasks, the same ones CI runs.
+  - repo: local
+    hooks:
+      - id: biome
+        name: biome lint
+        entry: mise run lint
+        language: system
+        pass_filenames: false
+        files: \.(ts|mjs|json)$
+      - id: typecheck
+        name: tsc type check
+        entry: mise run typecheck
+        language: system
+        pass_filenames: false
+        files: (\.ts|tsconfig\.json)$
+      - id: test
+        name: bun test
+        entry: mise run test
+        language: system
+        pass_filenames: false
+        stages: [pre-push]

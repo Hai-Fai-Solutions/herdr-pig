@@ -1,0 +1,11 @@
+[Hh]erdr
+[Pp]i[Gg]
+Dependabot
+SHAs?
+unmanaged
+gitleaks
+codespell
+shellcheck
+actionlint
+tsc
+PSScriptAnalyzer

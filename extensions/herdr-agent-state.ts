@@ -2,7 +2,6 @@
 //
 // Installed by the herdr-pig plugin; reinstalling or updating overwrites this file.
 // HERDR_PIG_EXTENSION_VERSION=1
-// @ts-nocheck
 
 import net from "node:net";
 import path from "node:path";
@@ -81,6 +80,7 @@ function requestId(kind: string): string {
 // Herdr rejects a resume command whose arguments contain an apostrophe or a
 // control character, and rejecting it drops the whole state report.
 export function isSafeResumeArg(value: unknown): value is string {
+  // biome-ignore lint/suspicious/noControlCharactersInRegex: the control characters are the point of this check
   return typeof value === "string" && value.length > 0 && !/['\u0000-\u001f\u007f]/.test(value);
 }
 
@@ -167,7 +167,8 @@ async function drainStateQueue(): Promise<void> {
   }
 }
 
-export default function (pi) {
+// PiG passes its extension API here. It is untyped because PiG's types are not a dependency.
+export default function (pi: any) {
   if (!enabled()) {
     return;
   }
@@ -209,7 +210,7 @@ export default function (pi) {
 
   // Other extensions can mark the agent as waiting on the user by emitting
   // `herdr:blocked` with `{ active, label }`, the same convention Pi uses.
-  pi.events.on("herdr:blocked", (data) => {
+  pi.events.on("herdr:blocked", (data: any) => {
     if (!rootSession) {
       return;
     }
@@ -227,7 +228,7 @@ export default function (pi) {
     publishState();
   });
 
-  pi.on("session_start", (_event, ctx) => {
+  pi.on("session_start", (_event: any, ctx: any) => {
     // TUI only: print, JSON and RPC modes have no pane for Herdr to show.
     if (ctx?.mode !== "tui") {
       return;
@@ -239,7 +240,7 @@ export default function (pi) {
     publishState(true);
   });
 
-  pi.on("agent_start", (_event, ctx) => {
+  pi.on("agent_start", (_event: any, ctx: any) => {
     if (!rootSession) {
       return;
     }
@@ -248,7 +249,7 @@ export default function (pi) {
     publishState();
   });
 
-  pi.on("agent_settled", (_event, ctx) => {
+  pi.on("agent_settled", (_event: any, ctx: any) => {
     if (!rootSession || ctx?.isIdle?.() !== true) {
       return;
     }
@@ -256,7 +257,7 @@ export default function (pi) {
     publishState();
   });
 
-  pi.on("session_shutdown", async (event) => {
+  pi.on("session_shutdown", async (event: any) => {
     // Switching or reloading a session keeps PiG in the pane, so only a real
     // quit releases it. Herdr clears a pane on its own if this never runs.
     if (!rootSession || event?.reason !== "quit") {

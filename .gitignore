@@ -1,1 +1,5 @@
 node_modules/
+
+# Vale styles are downloaded by `vale sync`; only the project vocabulary is kept.
+.vale/styles/*
+!.vale/styles/config/

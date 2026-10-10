@@ -10,7 +10,7 @@ same PiG session after a Herdr server restart.
 
 ## How it works
 
-There are two parts:
+It has two parts:
 
 - **A PiG extension** (`extensions/herdr-agent-state.ts`). It listens to PiG's
   lifecycle events and reports to Herdr over the socket Herdr exposes to every
@@ -31,26 +31,36 @@ print, JSON or RPC modes.
 - Herdr 0.9.0 or later. Restoring sessions after a restart needs 0.9.2 or
   later; older versions show state only.
 - PiG, with Node.js available for its TypeScript extension host.
-- Linux or macOS.
+- Linux, macOS or Windows. Windows is a preview, as it is in PiG itself: the
+  installer is tested there, but the extension has not been run against Herdr
+  on a Windows machine.
 
 ## Install
 
-Install the plugin from GitHub, then run its install action:
+Install the plugin from GitHub:
 
 ```bash
 herdr plugin install Hai-Fai-Solutions/herdr-pig
-herdr plugin action invoke herdr-pig.install
 ```
 
 Restart `pig`, or run `/reload` in a running session.
 
-To work on the plugin itself, link a local checkout instead of installing it:
+Installing the plugin also installs the extension into PiG. Run `pig` once
+before installing, so its agent directory exists; otherwise the install stops
+and says so.
+
+To work on the plugin itself, link a local checkout instead of installing it.
+Linking does not install the extension, so run the install action afterwards:
 
 ```bash
 herdr plugin link /path/to/herdr-pig
+herdr plugin action invoke herdr-pig.install
 ```
 
-The install action copies the extension to
+On Windows the actions are `herdr-pig.install-windows`,
+`herdr-pig.uninstall-windows` and `herdr-pig.status-windows`.
+
+The install copies the extension to
 `~/.pig/agent/extensions/herdr-pig-agent-state.ts`. It honours
 `PIG_CODING_AGENT_DIR` and `PIG_HOME`.
 
@@ -58,6 +68,10 @@ You can also install without the plugin:
 
 ```bash
 sh scripts/pig-support.sh install      # or: uninstall, status
+```
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/pig-support.ps1 install
 ```
 
 Or load it for one run, without installing anything:
@@ -81,6 +95,9 @@ herdr plugin action invoke herdr-pig.uninstall
 herdr plugin uninstall herdr-pig      # or: herdr plugin unlink herdr-pig
 ```
 
+Run the uninstall action first. Herdr has no uninstall hook, so removing the
+plugin alone leaves the extension in PiG's agent directory.
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
@@ -94,11 +111,18 @@ MIT. See [LICENSE](LICENSE).
   are not detected yet.
 - Installing is refused when `PIG_USE_PI_DIRS=1`, because Pi would then load
   the extension too and report itself as PiG.
-- Windows is not supported.
 
 ## Development
 
+[mise](https://mise.jdx.dev) installs the tools and runs the tasks:
+
 ```bash
-bun test                                   # extension and install script tests
+mise install                               # Bun, Node and the other pinned tools
+mise run hooks:install                     # git hooks; run once per checkout
+mise run check                             # lint, type check and test
+mise tasks                                 # list every task
 pig install . --validate-only --json       # check that PiG loads the extension
 ```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the checks, commit rules and release
+process, and [ARCHITECTURE.md](ARCHITECTURE.md) for how the parts fit together.

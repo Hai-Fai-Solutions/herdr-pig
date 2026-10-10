@@ -1,10 +1,13 @@
 #!/bin/sh
 # Installs, removes, or reports on the PiG extension that makes PiG report its
-# state to Herdr. Works on its own and as the command behind the plugin actions.
+# state to Herdr. Works on its own, as the plugin's build step, and as the
+# command behind the plugin actions.
 #
 # usage: pig-support.sh <install|uninstall|status|refresh>
 set -eu
 
+# CDPATH= stops a user CDPATH from changing where cd goes.
+# shellcheck disable=SC1007
 ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 SOURCE_FILE="$ROOT/extensions/herdr-agent-state.ts"
 INSTALL_NAME="herdr-pig-agent-state.ts"

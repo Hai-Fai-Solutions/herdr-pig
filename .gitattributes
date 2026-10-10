@@ -1,0 +1,3 @@
+# The same bytes on every platform, so an installed copy of the extension
+# compares equal to the plugin's copy whatever the checkout's line endings.
+* text=auto eol=lf

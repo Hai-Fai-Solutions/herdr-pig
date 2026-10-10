@@ -33,22 +33,27 @@ function importFresh() {
 
 async function startHerdr(): Promise<any[]> {
   const requests: any[] = [];
-  socketFile = join(tmpdir(), `herdr-pig-test-${process.pid}-${Date.now()}-${importCounter}.sock`);
+  // On Windows Herdr's socket is a named pipe, and HERDR_SOCKET_PATH holds its name.
+  const name = `herdr-pig-test-${process.pid}-${Date.now()}-${importCounter}.sock`;
+  const windows = process.platform === "win32";
+  const endpoint = windows ? `\\\\.\\pipe\\${name}` : join(tmpdir(), name);
+  socketFile = windows ? undefined : endpoint;
   server = createServer((socket) => {
     let buffer = "";
     socket.on("data", (chunk) => {
       buffer += chunk.toString();
-      let newline: number;
-      while ((newline = buffer.indexOf("\n")) >= 0) {
+      let newline = buffer.indexOf("\n");
+      while (newline >= 0) {
         requests.push(JSON.parse(buffer.slice(0, newline)));
         buffer = buffer.slice(newline + 1);
         socket.write('{"result":{}}\n');
+        newline = buffer.indexOf("\n");
       }
     });
   });
-  await new Promise<void>((resolve) => server!.listen(socketFile, () => resolve()));
+  await new Promise<void>((resolve) => server!.listen(endpoint, () => resolve()));
   process.env.HERDR_ENV = "1";
-  process.env.HERDR_SOCKET_PATH = socketFile;
+  process.env.HERDR_SOCKET_PATH = windows ? name : endpoint;
   process.env.HERDR_PANE_ID = "w1:p1";
   return requests;
 }
