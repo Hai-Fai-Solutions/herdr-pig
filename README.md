@@ -118,7 +118,9 @@ plugin alone leaves the extension in PiG's agent directory.
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+Apache-2.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE). The extension is based
+on Herdr's Pi integration, which is also Apache-2.0. Versions up to 0.2.0 were
+released under MIT.
 
 ## Limits
 

@@ -25,7 +25,7 @@ tasks, so a task that passes locally passes in CI.
 
 | Task | Does |
 | --- | --- |
-| `mise run check` | Lint, type check and test |
+| `mise run check` | Lint, type check, test and check licences |
 | `mise run lint` | Biome |
 | `mise run lint:shell` | Syntax check and shellcheck for `pig-support.sh` |
 | `mise run lint:powershell` | PSScriptAnalyzer for `pig-support.ps1`; needs `pwsh` |
@@ -33,6 +33,7 @@ tasks, so a task that passes locally passes in CI.
 | `mise run test` | Extension and installer tests |
 | `mise run hooks` | Every git hook, on every file |
 | `mise run audit` | Known vulnerabilities in dependencies |
+| `mise run licenses` | Dependency licences against the allow-list |
 
 Tasks install the dependencies first, so there is no separate install step.
 Add a new check as a task in `mise.toml` and call that task from the workflow.
@@ -143,6 +144,21 @@ change that fixes a bug is a `fix`. A large change to CI is still `ci`.
   remove the ignore.
 - Actions are pinned to commit SHAs. Leave the version comment next to the
   SHA, because Dependabot updates both.
+
+## Licence
+
+The project is Apache-2.0. The extension is based on Herdr's Pi integration,
+so keep the attribution header in `extensions/herdr-agent-state.ts` and the
+`NOTICE` file.
+
+Dependencies must use a licence on the allow-list, which holds permissive
+licences only. `mise run licenses` checks the whole tree, and CI checks every
+dependency a pull request adds. The list is in the `licenses` task in
+`mise.toml` and in `.github/workflows/ci.yml`; change both together.
+
+These checks read what packages declare. They cannot tell where copied source
+came from, so say in the pull request if you bring in code from another
+project.
 
 Please report a security problem privately through GitHub's
 [security advisories](https://github.com/Hai-Fai-Solutions/herdr-pig/security/advisories/new)

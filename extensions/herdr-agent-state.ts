@@ -2,6 +2,12 @@
 //
 // Installed by the herdr-pig plugin; reinstalling or updating overwrites this file.
 // HERDR_PIG_EXTENSION_VERSION=1
+//
+// Licensed under the Apache License, Version 2.0:
+// https://www.apache.org/licenses/LICENSE-2.0
+// Copyright 2026 Hai-Fai Solutions. Based on the Pi integration in Herdr
+// (https://github.com/herdrdev/herdr), copyright the Herdr authors, and
+// modified to report PiG's state.
 
 import net from "node:net";
 import path from "node:path";

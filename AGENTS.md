@@ -26,7 +26,7 @@ Use mise tasks, not the underlying tools. CI runs the same tasks.
 
 | Task | Does |
 | --- | --- |
-| `mise run check` | Lint, type check and test |
+| `mise run check` | Lint, type check, test and check licences |
 | `mise run hooks` | Every git hook, on every file |
 | `mise run test` | Tests only |
 | `mise run lint` | Biome |
@@ -56,6 +56,10 @@ call that task from the workflow and the hook.
   `Get-FileHash` or syntax from PowerShell 7.
 - **Every manifest entry needs a form for each platform**: a shell entry, and a
   PowerShell entry with a `-windows` id.
+- **Keep the attribution header** in the extension, and the `NOTICE` file. The
+  extension is based on Herdr's Pi integration, and Apache-2.0 requires both.
+- **Say where copied code comes from.** Do not paste source from another
+  project without naming it and its licence in the pull request.
 - **Add a test for a behaviour change.**
 
 ## Rules for git
