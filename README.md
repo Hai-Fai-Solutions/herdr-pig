@@ -122,16 +122,5 @@ bun run typecheck                          # TypeScript type check
 pig install . --validate-only --json       # check that PiG loads the extension
 ```
 
-### Contributing
-
-- Commit and title changes with [Conventional Commits](https://www.conventionalcommits.org):
-  `feat:`, `fix:`, `docs:`, `ci:` and so on. Add `!` after the type, or a
-  `BREAKING CHANGE:` footer, for a breaking change.
-- Pull requests are squash-merged, so the PR title becomes the commit on
-  `main`. CI checks the title, lint, types, tests on Linux, macOS and Windows, and new
-  dependencies before a PR can merge.
-- Every merge to `main` that has a `feat`, `fix`, `perf` or breaking commit
-  releases a new version. [semantic-release](https://github.com/semantic-release/semantic-release)
-  (`release.config.mjs`) bumps `package.json` and `herdr-plugin.toml`, updates
-  `CHANGELOG.md`, commits `chore(release): X.Y.Z [skip ci]`, tags `vX.Y.Z` and
-  creates the GitHub release. Other commit types do not release.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the checks, commit rules and release
+process, and [ARCHITECTURE.md](ARCHITECTURE.md) for how the parts fit together.
