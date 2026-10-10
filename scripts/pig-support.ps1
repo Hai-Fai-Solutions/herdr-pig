@@ -47,8 +47,10 @@ function Test-Managed([string]$Path) {
     return [bool](Select-String -LiteralPath $Path -SimpleMatch -Pattern $Marker -Quiet)
 }
 
+# Uses .NET directly: Get-FileHash fails to load in Windows PowerShell when it is
+# started from PowerShell 7, which hands it the wrong module path.
 function Test-SameContent([string]$Left, [string]$Right) {
-    return (Get-FileHash -LiteralPath $Left).Hash -eq (Get-FileHash -LiteralPath $Right).Hash
+    return [System.IO.File]::ReadAllText($Left) -ceq [System.IO.File]::ReadAllText($Right)
 }
 
 $AgentDir = Get-AgentDir
