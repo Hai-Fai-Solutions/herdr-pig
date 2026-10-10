@@ -118,6 +118,7 @@ MIT. See [LICENSE](LICENSE).
 
 ```bash
 mise install                               # Bun, Node and the other pinned tools
+mise run hooks:install                     # git hooks; run once per checkout
 mise run check                             # lint, type check and test
 mise tasks                                 # list every task
 pig install . --validate-only --json       # check that PiG loads the extension
