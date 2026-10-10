@@ -114,11 +114,12 @@ MIT. See [LICENSE](LICENSE).
 
 ## Development
 
+[mise](https://mise.jdx.dev) installs the tools and runs the tasks:
+
 ```bash
-bun install
-bun test                                   # extension and install script tests
-bun run lint                               # Biome lint
-bun run typecheck                          # TypeScript type check
+mise install                               # Bun, Node and the other pinned tools
+mise run check                             # lint, type check and test
+mise tasks                                 # list every task
 pig install . --validate-only --json       # check that PiG loads the extension
 ```
 

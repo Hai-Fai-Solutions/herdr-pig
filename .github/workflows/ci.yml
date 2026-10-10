@@ -8,6 +8,8 @@ on:
 permissions:
   contents: read
 
+# Every job runs a mise task, the same one contributors run locally. Tool
+# versions come from mise.toml.
 jobs:
   test:
     name: test (${{ matrix.os }})
@@ -20,54 +22,46 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+      - uses: jdx/mise-action@2d8d4cafcbd33be2ea37d2b6f5ad595363d1f1ca # v5.1.1
         with:
-          bun-version: "1.4.2"
+          install_args: bun node
 
-      - run: bun install --frozen-lockfile
-
-      - run: bun test
+      - run: mise run test
 
   lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+      - uses: jdx/mise-action@2d8d4cafcbd33be2ea37d2b6f5ad595363d1f1ca # v5.1.1
         with:
-          bun-version: "1.4.2"
+          install_args: bun node
 
-      - run: bun install --frozen-lockfile
-
-      - run: bun run lint
+      - run: mise run lint
 
   typecheck:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+      - uses: jdx/mise-action@2d8d4cafcbd33be2ea37d2b6f5ad595363d1f1ca # v5.1.1
         with:
-          bun-version: "1.4.2"
+          install_args: bun node
 
-      - run: bun install --frozen-lockfile
-
-      - run: bun run typecheck
+      - run: mise run typecheck
 
   shell:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Check shell script syntax
-        run: sh -n scripts/pig-support.sh
+      - uses: jdx/mise-action@2d8d4cafcbd33be2ea37d2b6f5ad595363d1f1ca # v5.1.1
+        with:
+          install_args: shellcheck
 
-      - name: Lint shell script
-        run: shellcheck --shell=sh scripts/pig-support.sh
+      - run: mise run lint:shell
 
-      - name: Lint PowerShell script
-        shell: pwsh
-        run: Invoke-ScriptAnalyzer -Path scripts/pig-support.ps1 -Severity Error -EnableExit
+      - run: mise run lint:powershell
 
   # Runs the same hooks contributors run locally, on every file.
   pre-commit:
@@ -75,13 +69,9 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
-        with:
-          bun-version: "1.4.2"
+      - uses: jdx/mise-action@2d8d4cafcbd33be2ea37d2b6f5ad595363d1f1ca # v5.1.1
 
-      - run: bun install --frozen-lockfile
-
-      - uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd # v3.0.1
+      - run: mise run hooks
         env:
           # That hook guards local commits; CI also runs on main itself.
           SKIP: no-commit-to-branch

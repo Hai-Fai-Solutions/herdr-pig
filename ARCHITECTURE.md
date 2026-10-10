@@ -165,6 +165,11 @@ CI runs both files on Linux, macOS and Windows. The PowerShell script is
 tested under `pwsh` on Linux and macOS, and under Windows PowerShell on
 Windows.
 
+## Tooling
+
+`mise.toml` pins the tools and defines the tasks. Contributors, the git hooks
+and every CI job run the same tasks, so there is one definition of each check.
+
 ## Releases
 
 Versions live in `package.json` and `herdr-plugin.toml`, and must match.

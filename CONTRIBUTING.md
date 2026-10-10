@@ -6,59 +6,56 @@ read [ARCHITECTURE.md](ARCHITECTURE.md) first.
 
 ## Setup
 
-You need [Bun](https://bun.sh) 1.4 or later, and Git. To try a change for real
-you also need [Herdr](https://herdr.dev) 0.9.0 or later and
+You need [mise](https://mise.jdx.dev) and Git. mise installs everything else at
+the versions in `mise.toml`: Bun, Node, pre-commit and shellcheck. To try a
+change for real you also need [Herdr](https://herdr.dev) 0.9.0 or later and
 [PiG](https://github.com/MichaelKinsy/PiG).
 
 ```bash
 git clone https://github.com/Hai-Fai-Solutions/herdr-pig
 cd herdr-pig
-bun install
+mise install
+mise run hooks:install
 ```
+
+## Tasks
+
+mise is the task runner, locally and in CI. Every CI job runs one of these
+tasks, so a task that passes locally passes in CI.
+
+| Task | Does |
+| --- | --- |
+| `mise run check` | Lint, type check and test |
+| `mise run lint` | Biome |
+| `mise run lint:shell` | Syntax check and shellcheck for `pig-support.sh` |
+| `mise run lint:powershell` | PSScriptAnalyzer for `pig-support.ps1`; needs `pwsh` |
+| `mise run typecheck` | tsc |
+| `mise run test` | Extension and installer tests |
+| `mise run hooks` | Every git hook, on every file |
+| `mise run audit` | Known vulnerabilities in dependencies |
+
+Tasks install the dependencies first, so there is no separate install step.
+Add a new check as a task in `mise.toml` and call that task from the workflow.
+
+The tests run on Linux, macOS and Windows in CI. The PowerShell cases are
+skipped locally when `pwsh` is not installed, so a change to
+`pig-support.ps1` is only fully checked once CI has run.
 
 ## Git hooks
 
-The repository uses [pre-commit](https://pre-commit.com). Install it, then set
-the hooks up once:
-
-```bash
-pre-commit install
-```
-
-The hooks download their own tools, apart from Bun.
+`mise run hooks:install` sets up [pre-commit](https://pre-commit.com) hooks.
+They download their own tools.
 
 | When | What runs |
 | --- | --- |
 | Before a commit | gitleaks for secrets, codespell and Vale for spelling and prose, Biome, the type check, shellcheck, actionlint for the workflows, and file hygiene checks |
 | On the commit message | A conventional-commit check |
-| Before a push | `bun test` |
+| Before a push | The tests |
 
-A hook also refuses a commit made directly on `main`. To run every hook on
-every file:
-
-```bash
-pre-commit run --all-files
-```
+A hook also refuses a commit made directly on `main`.
 
 Vale reads `.vale.ini`. Add a project word it does not know to
 `.vale/styles/config/vocabularies/herdr-pig/accept.txt`.
-
-## Checks
-
-The hooks run these for you. To run them by hand:
-
-```bash
-bun test             # extension and installer tests
-bun run lint         # Biome
-bun run typecheck    # tsc
-```
-
-CI also runs `shellcheck` on `scripts/pig-support.sh` and PSScriptAnalyzer on
-`scripts/pig-support.ps1`.
-
-The tests run on Linux, macOS and Windows in CI. The PowerShell cases are
-skipped locally when `pwsh` is not installed, so a change to
-`pig-support.ps1` is only fully checked once CI has run.
 
 ## Trying a change
 
@@ -141,9 +138,9 @@ change that fixes a bug is a `fix`. A large change to CI is still `ci`.
 ## Dependencies and security
 
 - Dependabot opens weekly pull requests for Bun packages and GitHub Actions.
-- A weekly job runs `bun audit`. An advisory that has no fix can be ignored in
-  `.github/workflows/audit.yml`, with a comment saying why and when to remove
-  the ignore.
+- A weekly job runs `mise run audit`. An advisory that has no fix can be
+  ignored in that task in `mise.toml`, with a comment saying why and when to
+  remove the ignore.
 - Actions are pinned to commit SHAs. Leave the version comment next to the
   SHA, because Dependabot updates both.
 

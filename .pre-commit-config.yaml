@@ -1,5 +1,5 @@
 # Local checks that run before a commit, on the commit message, and before a push.
-# Set up once with: pre-commit install
+# Set up once with: mise run hooks:install
 # CI runs the pre-commit stage on every file, so a skipped hook is still caught.
 default_install_hook_types: [pre-commit, commit-msg, pre-push]
 default_stages: [pre-commit]
@@ -65,24 +65,24 @@ repos:
       - id: conventional-pre-commit
         stages: [commit-msg]
 
-  # These use the project's own tools, so run `bun install` first.
+  # These run the project's mise tasks, the same ones CI runs.
   - repo: local
     hooks:
       - id: biome
         name: biome lint
-        entry: bun run lint
+        entry: mise run lint
         language: system
         pass_filenames: false
         files: \.(ts|mjs|json)$
       - id: typecheck
         name: tsc type check
-        entry: bun run typecheck
+        entry: mise run typecheck
         language: system
         pass_filenames: false
         files: (\.ts|tsconfig\.json)$
       - id: test
         name: bun test
-        entry: bun test
+        entry: mise run test
         language: system
         pass_filenames: false
         stages: [pre-push]

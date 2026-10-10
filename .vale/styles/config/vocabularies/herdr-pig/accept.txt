@@ -7,3 +7,5 @@ gitleaks
 codespell
 shellcheck
 actionlint
+tsc
+PSScriptAnalyzer

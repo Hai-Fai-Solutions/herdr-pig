@@ -1,0 +1,70 @@
+# Tools and tasks for local development and CI. Both use the same tasks, so a
+# check that passes locally passes in CI.
+#
+#   mise install       install the pinned tools
+#   mise run check     lint, type check and test
+#   mise tasks         list every task
+
+[tools]
+bun = "1.4.2"
+# Biome, tsc and semantic-release start through Node.
+node = "24"
+pre-commit = "4.5.1"
+shellcheck = "0.11.0"
+
+[env]
+# Makes the project's own tools, such as biome and tsc, available to tasks.
+_.path = ["node_modules/.bin"]
+
+[tasks.install]
+description = "Install dependencies from the lockfile"
+run = "bun install --frozen-lockfile"
+
+[tasks.lint]
+description = "Lint TypeScript with Biome"
+depends = ["install"]
+run = "biome lint ."
+
+[tasks."lint:shell"]
+description = "Check the shell installer's syntax and lint it"
+run = ["sh -n scripts/pig-support.sh", "shellcheck --shell=sh scripts/pig-support.sh"]
+
+[tasks."lint:powershell"]
+description = "Lint the PowerShell installer (needs pwsh)"
+run = "pwsh -NoProfile -Command \"Invoke-ScriptAnalyzer -Path scripts/pig-support.ps1 -Severity Error -EnableExit\""
+
+[tasks.typecheck]
+description = "Type-check with tsc"
+depends = ["install"]
+run = "tsc --noEmit"
+
+[tasks.test]
+description = "Run the extension and installer tests"
+depends = ["install"]
+run = "bun test"
+
+[tasks.check]
+description = "Lint, type check and test"
+depends = ["lint", "lint:shell", "typecheck", "test"]
+
+[tasks.hooks]
+description = "Run every pre-commit hook on every file"
+depends = ["install"]
+run = "pre-commit run --all-files"
+
+[tasks."hooks:install"]
+description = "Set up the git hooks in this checkout"
+run = "pre-commit install"
+
+[tasks.audit]
+description = "Check dependencies for known vulnerabilities"
+depends = ["install"]
+# GHSA-vfj7-8cjw-p6xm is in braces, a transitive dependency of semantic-release
+# that only runs at release time. No fixed version exists yet; drop the ignore
+# once one does.
+run = "bun audit --ignore=GHSA-vfj7-8cjw-p6xm"
+
+[tasks.release]
+description = "Release with semantic-release (run by CI on main)"
+depends = ["install"]
+run = "semantic-release"

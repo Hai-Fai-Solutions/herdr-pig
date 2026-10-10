@@ -6,8 +6,6 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "lint": "biome lint .",
-    "typecheck": "tsc --noEmit",
     "test": "bun test"
   },
   "pi": {
