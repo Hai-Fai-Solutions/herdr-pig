@@ -33,6 +33,13 @@ run = ["sh -n scripts/pig-support.sh", "shellcheck --shell=sh scripts/pig-suppor
 description = "Lint the PowerShell installer (needs pwsh)"
 run = "pwsh -NoProfile -Command \"Invoke-ScriptAnalyzer -Path scripts/pig-support.ps1 -Severity Error -EnableExit\""
 
+[tasks.licenses]
+description = "Fail on a dependency whose licence is not on the allow-list"
+depends = ["install"]
+# Permissive licences only. Add one here after checking that its terms are
+# acceptable; keep the list in step with allow-licenses in the CI workflow.
+run = "license-checker-rseidelsohn --excludePrivatePackages --summary --onlyAllow \"MIT;ISC;Apache-2.0;Apache 2.0;BlueOak-1.0.0;BSD-2-Clause;BSD-3-Clause;CC0-1.0;Python-2.0;Artistic-2.0;CC-BY-3.0\""
+
 [tasks.typecheck]
 description = "Type-check with tsc"
 depends = ["install"]
@@ -44,8 +51,8 @@ depends = ["install"]
 run = "bun test"
 
 [tasks.check]
-description = "Lint, type check and test"
-depends = ["lint", "lint:shell", "typecheck", "test"]
+description = "Lint, type check, test and check licences"
+depends = ["lint", "lint:shell", "typecheck", "test", "licenses"]
 
 [tasks.hooks]
 description = "Run every pre-commit hook on every file"

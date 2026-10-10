@@ -39,6 +39,8 @@ jobs:
 
       - run: mise run lint
 
+      - run: mise run licenses
+
   typecheck:
     runs-on: ubuntu-latest
     steps:
@@ -76,7 +78,8 @@ jobs:
           # That hook guards local commits; CI also runs on main itself.
           SKIP: no-commit-to-branch
 
-  # Fails a pull request that adds a dependency with a known vulnerability.
+  # Fails a pull request that adds a dependency with a known vulnerability or
+  # with a licence that is not on the allow-list.
   dependency-review:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
@@ -84,3 +87,6 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
+        with:
+          # Keep in step with the licenses task in mise.toml.
+          allow-licenses: MIT, ISC, Apache-2.0, BlueOak-1.0.0, BSD-2-Clause, BSD-3-Clause, CC0-1.0, Python-2.0, Artistic-2.0, CC-BY-3.0

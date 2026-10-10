@@ -4,7 +4,7 @@
   "description": "PiG extension that reports agent state and a resume command to Herdr.",
   "private": true,
   "type": "module",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "scripts": {
     "test": "bun test"
   },
@@ -20,6 +20,7 @@
     "@semantic-release/git": "^11.0.1",
     "@semantic-release/npm": "^13.2.0",
     "@types/bun": "^1.4.2",
+    "license-checker-rseidelsohn": "^5.0.1",
     "semantic-release": "^25.0.9",
     "typescript": "^7.0.2"
   }
