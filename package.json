@@ -19,7 +19,7 @@
     "@semantic-release/exec": "^7.1.0",
     "@semantic-release/git": "^11.0.1",
     "@semantic-release/npm": "^13.2.0",
-    "@types/bun": "^1.4.2",
+    "@types/bun": "^1.4.3",
     "license-checker-rseidelsohn": "^5.0.1",
     "semantic-release": "^25.0.9",
     "typescript": "^7.0.2"
